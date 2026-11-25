@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+
+# PyInstaller / build output
+build/
+dist/
+*.spec
+*.exe
+
+# App runtime output (contains hostnames / usernames / IPs — never commit)
+reports/
+last_snapshot.json
+security_journal.jsonl
+
+# Archives & local artifacts
+*.rar
+*.zip
+*.7z
+
+# Editors / OS
+.vscode/
+.idea/
+Thumbs.db
+desktop.ini
