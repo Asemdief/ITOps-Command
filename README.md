@@ -1,204 +1,302 @@
-<div align="center">
+ <div align="center">
 
-# ITOps Command
+# ⚡ ITOps Command
 
-**Windows endpoint diagnostics and security posture audit.**
-Silent. Local. Honest about what it can't see.
+### Windows Endpoint Intelligence & Security Assessment
 
-![Platform](https://img.shields.io/badge/platform-Windows%2010%20%7C%2011-1c1c1f?style=flat-square&logo=windows&logoColor=white)
-![Python](https://img.shields.io/badge/python-3.10%2B-1c1c1f?style=flat-square&logo=python&logoColor=white)
-![Status](https://img.shields.io/badge/status-beta-22d3ee?style=flat-square)
-![Version](https://img.shields.io/badge/version-1.10.0-1c1c1f?style=flat-square)
-![License](https://img.shields.io/badge/license-proprietary-71717a?style=flat-square)
+**Diagnose. Understand. Secure.**
+
+A local-first Windows IT Operations tool that transforms endpoint telemetry into actionable diagnostics, root-cause insights, and security posture assessments.
+
+![Windows](https://img.shields.io/badge/Windows-10%20%7C%2011-0078D4?style=for-the-badge&logo=windows)
+![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?style=for-the-badge&logo=python)
+![Version](https://img.shields.io/badge/Version-1.10.0-0F766E?style=for-the-badge)
+![Status](https://img.shields.io/badge/Status-Beta-D97706?style=for-the-badge)
+![License](https://img.shields.io/badge/License-Proprietary-52525B?style=for-the-badge)
 
 </div>
 
 ---
 
-ITOps Command turns raw Windows telemetry into **root-cause findings, a prioritised fix plan, and a security posture score with evidence** — in one double-click windowed app, with no black console flashing on screen and nothing leaving the machine.
+## 🚀 Overview
 
-```
-Instead of    RAM 87%  ·  Disk C: 91%  ·  ping failed
-You get       High memory pressure · Critical free space on C:
-              Top consumers · prioritised fix plan
-              Internet OK (DNS/TCP path verified — not ICMP-only)
+ITOps Command is designed to simplify Windows endpoint troubleshooting and security assessment.
 
-              Security 17/100 (F) · 20 of 22 checks evaluated
-              FAIL  Antivirus real-time protection off   [CRITICAL]
-              FAIL  RDP enabled without NLA              [HIGH]
-              FAIL  SMBv1 enabled                        [HIGH]
-```
+Instead of manually checking Task Manager, network configuration, system resources, and security settings, technicians can use one application to collect system information, identify operational issues, and review security weaknesses.
 
-> **Status — Beta (v1.10.0).** The diagnostics pipeline is in daily use. The new security module is covered by automated tests that use mocked registry/PowerShell data; validation on real hardware (Windows 10/11, admin and standard, non-English locale) is in progress. See [Known limitations](#known-limitations).
+**Built for:**
+- IT Helpdesk & Technical Support
+- IT Operations Engineers
+- System Administrators
+- MSP Technicians
+- Endpoint Security Assessment
 
-## Who it's for
+## ✨ Core Capabilities
 
-Helpdesk L1–L2, sysadmins, MSP technicians and small IT teams who need a fast, consistent look at a machine — and consultants who need pre-audit evidence of its security posture.
+### 🖥️ Endpoint Diagnostics
 
-## What it does
-
-### Diagnostics
-
-| Area | What you get |
+| Module | Capability |
 |---|---|
-| **Inventory** | Host, user, OS, CPU, RAM, disk partitions and status |
-| **Network** | Active adapter (virtual adapters filtered), gateway, DNS, internet path, latency |
-| **Processes** | Top CPU / RAM consumers with system noise filtered |
-| **Health** | Score 0–100 from CPU, RAM and disk pressure |
-| **Root cause** | Plain-language issues with a prioritised fix plan |
-| **History** | Delta versus the previous run |
-| **Reports** | HTML + JSON written locally, next to the app |
+| System Inventory | Hostname, OS, CPU, RAM, disks |
+| Network Diagnostics | Adapters, DNS, gateway, connectivity |
+| Process Analysis | CPU and memory consumers |
+| System Health | Resource-based health score |
+| Root Cause Analysis | Identify and explain operational issues |
+| Fix Planning | Prioritized troubleshooting recommendations |
+| History | Compare previous diagnostic runs |
+| Reporting | Local HTML and JSON reports |
 
-### Security posture — 22 read-only checks
+### 🛡️ Security Posture Assessment
 
-| Category | Checks |
+Evaluate Windows security configuration through **22 read-only checks across 7 security categories**.
+
+| Category | Security Checks |
 |---|---|
-| **Endpoint Protection** (4) | Real-time protection · signature freshness · tamper protection · Defender exclusions |
-| **Network & Exposure** (5) | Firewall (all profiles) · Remote Desktop / NLA · SMBv1 · LLMNR · risky listening ports |
-| **Disk & Boot** (2) | BitLocker on the system drive · Secure Boot |
-| **Accounts & Access** (5) | UAC · local administrators count · Guest account · built-in Administrator · inactivity lock |
-| **Credential Protection** (2) | WDigest plaintext caching · LSA protection (RunAsPPL) |
-| **Patching** (2) | Age of last installed update · pending reboot |
-| **Persistence & Logging** (2) | Startup programs (signature + location) · PowerShell script block logging |
+| Endpoint Protection | Defender status, signatures, tamper protection, exclusions |
+| Network & Exposure | Firewall, RDP/NLA, SMBv1, LLMNR, listening ports |
+| Disk & Boot | BitLocker, Secure Boot |
+| Accounts & Access | UAC, administrators, Guest, inactivity lock |
+| Credential Protection | WDigest, LSA Protection |
+| Patching | Update age, pending reboot |
+| Persistence & Logging | Startup programs, PowerShell logging |
 
-Every finding carries a **stable ID** (`ITC-001`…), **severity**, **expected vs. actual**, **evidence**, **remediation steps**, and a short **fingerprint** so the same state can be tracked across scans. Each scan gets a **case ID**.
+Each finding includes:
+- Stable Finding ID
+- Severity classification
+- Expected vs. actual configuration
+- Supporting evidence
+- Remediation guidance
+- Finding fingerprint
 
-**How the score works**
+### 📊 Security Scoring
 
-- Severity-weighted: `CRITICAL 10 · HIGH 6 · MEDIUM 3 · LOW 1`; a warning earns half credit.
-- Any failed `CRITICAL` check **caps the score at 59** — a machine with plaintext credential caching can't grade "B".
-- A check that can't be evaluated (needs admin, tool unavailable) is marked `UNKNOWN` / `NEEDS_ADMIN`, **excluded from the score, and reported as lower coverage** (e.g. *20 of 22 evaluated*). It is never guessed and never penalised.
-- **Low coverage means no letter grade.** If fewer than 70% of the checks could be evaluated, the score is shown as *provisional* with grade `N/A` — a "B" built on half the checks would be misleading. Every `UNKNOWN` states why (e.g. *PowerShell part timed out*).
+The security score uses severity-weighted evaluation.
 
-> Check areas are inspired by common hardening baselines, but the IDs and labels are ITOps Command's own — this is not an official CIS benchmark implementation.
+| Severity | Weight |
+|---|---:|
+| CRITICAL | 10 |
+| HIGH | 6 |
+| MEDIUM | 3 |
+| LOW | 1 |
 
-### Reversible fixes (opt-in)
+**Scoring principles:**
+- Critical failures cap the score at 59.
+- Warnings receive half credit.
+- Unavailable checks are marked UNKNOWN or NEEDS_ADMIN.
+- Unknown checks are excluded from scoring.
+- Coverage below 70% produces a provisional result without a letter grade.
 
-`modules/security_fix.py` can remediate selected findings (RDP NLA, SMBv1, LLMNR, UAC, inactivity lock, WDigest, LSA protection, PowerShell logging):
+> This is an internal assessment model, not an official CIS Benchmark implementation or compliance certification.
 
-- **Dry-run by default** — shows exactly what would change, the previous value, the impact and whether a reboot is needed.
-- **Journaled** — every applied change is recorded with its previous value.
-- **Rollback** — any journaled change can be undone.
-- Registry DWORD changes only. Nothing irreversible belongs here.
+### 🔧 Reversible Security Remediation
 
-> The fix API is complete and tested; the UI for it is on the roadmap.
+The security remediation API supports selected configuration changes.
 
-### Automatic housekeeping during a diagnostic
+- Dry-run by default.
+- Previous values are journaled.
+- Applied changes can be rolled back.
+- Explicit execution is required.
 
-Deliberately small and conservative: flushes the DNS cache, and removes TEMP items that have not been modified for **24 hours or more** (anything recently touched — including folders with a recently written file inside — is left alone). **The Recycle Bin is never emptied automatically.**
+**Note:** The remediation API exists, but its dedicated GUI workflow is still under development.
 
-## Design principles
+### ⚙️ Automated Housekeeping
 
-1. **The security scan never changes the machine.** Read-only, always.
-2. **No console flash.** Every system command goes through `modules/win_silent.py` (`CREATE_NO_WINDOW`, never `shell=True`).
-3. **Locale-independent where it matters.** Registry reads, PowerShell returning JSON objects, and well-known SIDs instead of localised account names.
-4. **Honest coverage.** What can't be checked is reported as unchecked.
-5. **Network truth.** DNS resolution **or** TCP/HTTPS success means *Internet OK*. An ICMP ping failure alone never marks a machine offline.
-6. **Local-first.** No telemetry, no uploads, no account. Reports stay on the machine. Connectivity checks contact public endpoints (Microsoft connect-test, Cloudflare / Google / Quad9 DNS) only to test reachability.
+Conservative maintenance actions:
 
-## Sample output
+- Flush DNS cache.
+- Remove TEMP items untouched for at least 24 hours.
+- Preserve recently modified files and folders.
+- Never automatically empty the Recycle Bin.
 
-*Generated from mocked data to show the format — not a real machine.*
+---
 
-```
-CASE ITC-20261115-1200-2472   elevated=False
-SCORE 17/100 (F)   coverage 20/22   [capped by CRITICAL failure]
+## 🧠 Design Philosophy
 
-[FAIL       ] CRITICAL ITC-001  Antivirus real-time protection   ->  Disabled
-[FAIL       ] HIGH     ITC-010  Windows Firewall (all profiles)  ->  Off: Public
-[FAIL       ] HIGH     ITC-011  Remote Desktop exposure          ->  Enabled WITHOUT NLA
-[FAIL       ] HIGH     ITC-012  SMBv1 server protocol            ->  Enabled
-[NEEDS_ADMIN] MEDIUM   ITC-004  Defender exclusions              ->  Requires administrator
-[WARN       ] MEDIUM   ITC-041  LSA protection (RunAsPPL)        ->  Not enabled
-[PASS       ] MEDIUM   ITC-032  Guest account disabled           ->  Disabled
-```
+ITOps Command follows six principles:
 
-## Quick start
+1. **Local-first:** Diagnostic reports remain on the endpoint.
+2. **Read-only security assessment:** Scanning does not modify security settings.
+3. **Evidence-based findings:** Results should explain why something was flagged.
+4. **Honest coverage:** Unavailable information is never treated as a pass.
+5. **Safe remediation:** Changes require explicit opt-in.
+6. **Operational clarity:** Findings should help technicians decide what to investigate next.
 
-**Requirements:** Windows 10 / 11, Python 3.10+ (source runs), `psutil`, `customtkinter`.
+Connectivity checks contact public endpoints to verify reachability; the application does not claim to operate without network traffic.
 
-```bat
+## 📸 Application Preview
+
+<!-- Add real application screenshots here -->
+
+| Dashboard | Security Assessment |
+|---|---|
+| Add dashboard screenshot | Add security results screenshot |
+
+| Diagnostic Report | Root Cause Analysis |
+|---|---|
+| Add report screenshot | Add root-cause screenshot |
+
+## 🚀 Installation
+
+### Requirements
+
+- Windows 10 / 11
+- Python 3.10+
+- Administrator privileges recommended
+
+### Run from source
+
+\`\`\`powershell
 git clone https://github.com/Asemdief/ITOps-Command.git
+
 cd ITOps-Command
-pip install -r requirements.txt
-run_gui.vbs
-```
 
-`run_gui.vbs` / `run_gui.bat` start the app **without a console window**. (Plain `python gui.py` always shows one — `python.exe` is a console program. Use `pythonw gui.py` if you prefer the command line.)
+python -m pip install -r requirements.txt
 
-Run as **Administrator** for full security coverage; without elevation some checks report `NEEDS_ADMIN`.
+.\run_gui.vbs
+\`\`\`
 
-Developer commands:
+Alternative launch:
 
-```bat
-python -m modules.security                      :: security scan to the console (dev only)
-python -m unittest discover -s tests -t . -v    :: run the test suite
-```
+\`\`\`powershell
+.\run_gui.bat
+\`\`\`
 
-### Build a standalone `.exe`
+### Build executable
 
-```bat
-build_exe.bat
-```
+\`\`\`powershell
+.\build_exe.bat
+\`\`\`
 
-Produces `dist\ITOps-Assistant.exe` (`--onefile --windowed --noconsole`). Unsigned executables may trigger SmartScreen or antivirus warnings; code signing is planned.
+Output:
 
-## Project layout
+\`\`\`text
+dist\ITOps-Assistant.exe
+\`\`\`
 
-```
+The current executable is unsigned and may trigger Windows SmartScreen or antivirus warnings.
+
+## 🧪 Testing
+
+Run the automated test suite:
+
+\`\`\`powershell
+python -m unittest discover -s tests -t . -v
+\`\`\`
+
+Run security diagnostics:
+
+\`\`\`powershell
+python -m modules.security --debug
+\`\`\`
+
+Current automated test suite: **38 unit tests**.
+
+Security collector tests use mocked registry and PowerShell data. Real-hardware validation remains ongoing.
+
+## 🏗️ Architecture
+
+\`\`\`text
 ITOps-Command/
-├── gui.py                  # CustomTkinter UI + scan orchestration (background thread)
+│
+├── gui.py
+│
 ├── modules/
-│   ├── inventory.py        # System / CPU / RAM / disks
-│   ├── network.py          # Adapter, gateway, DNS, internet probes
-│   ├── processes.py        # Top CPU / RAM consumers
-│   ├── health.py           # Health score 0–100
-│   ├── root_cause.py       # Issues from telemetry
-│   ├── fix_plan.py         # Prioritised suggestions
-│   ├── fix_engine.py       # Conservative silent housekeeping
-│   ├── security.py         # 22-check posture scan + scoring (read-only)
-│   ├── security_fix.py     # Opt-in fixes: dry-run, journal, rollback
-│   ├── registry_io.py      # winreg access layer
-│   ├── history.py          # Previous run + deltas
-│   ├── export.py           # HTML + JSON reports
-│   ├── win_silent.py       # Hidden-window process helpers
-│   ├── paths.py            # App dir (source + frozen) and per-user data dir
-│   └── version.py          # Single source of truth for the version
-├── tests/                  # 38 unit tests (unittest)
-├── docs/SECURITY_MODULE.md # Security module design notes
-├── build_exe.bat · run_gui.bat · run_gui.vbs
-├── version_info.txt · icon.ico · requirements.txt
-├── CHANGELOG.md · LICENSE
-└── README.md
-```
+│   ├── inventory.py
+│   ├── network.py
+│   ├── processes.py
+│   ├── health.py
+│   ├── root_cause.py
+│   ├── fix_plan.py
+│   ├── fix_engine.py
+│   ├── security.py
+│   ├── security_fix.py
+│   ├── registry_io.py
+│   ├── history.py
+│   ├── export.py
+│   ├── win_silent.py
+│   ├── paths.py
+│   └── version.py
+│
+├── tests/
+├── docs/
+├── build_exe.bat
+├── run_gui.bat
+├── run_gui.vbs
+├── requirements.txt
+├── CHANGELOG.md
+└── LICENSE
+\`\`\`
 
-## Known limitations
+## ⚠️ Known Limitations
 
-Being upfront, because this is a security tool:
+ITOps Command is currently in Beta.
 
-- **Security module — real-hardware validation is ongoing.** Logic is unit-tested with mocks, and a first run on Windows 10 has already surfaced and fixed a PowerShell output-encoding bug. BitLocker detection and registry semantics across Windows builds still need confirmation on more machines. If something looks wrong, `python -m modules.security --debug` prints the raw collector diagnostics.
-- **Network layer assumes English output** from `ipconfig` / `ping`. On non-English Windows the gateway or latency may show `n/a`. A locale-independent rewrite is planned.
-- **Gateway check uses ICMP**, so a router that blocks ping can show a false "gateway issue" even when internet works.
-- **Captive portals** can answer the HTTP probe and be reported as *Internet OK*.
-- **Health score ≠ security score.** The health score reflects CPU / RAM / disk pressure only; security posture is scored separately.
-- **History** keeps only the previous snapshot.
-- **Unsigned builds** may be flagged by SmartScreen / AV.
+- Broader Windows 10/11 real-device validation is ongoing.
+- Some PowerShell and registry collectors need validation across different Windows builds.
+- Parts of network diagnostics still depend on localized command output.
+- ICMP gateway checks may report false reachability issues.
+- Captive portals can affect connectivity results.
+- Health score and security score measure different things.
+- History currently stores only the previous snapshot.
+- Security remediation GUI is not yet implemented.
+- Executable code signing is planned.
 
-## Roadmap
+## 🗺️ Roadmap
 
-| Next | Focus |
+| Priority | Planned Feature |
 |---|---|
-| Real-hardware validation | Windows 10 / 11, admin and standard, English and Arabic locale |
-| New interface | Live scan sequence, security tab, per-finding evidence view, fix preview and rollback |
-| Locale-independent network layer | Native APIs instead of parsing localised command output |
-| Reporting | PDF export, white-label reports, trend history (SQLite) |
-| Distribution | Installer, code signing, update channel |
-| Exploratory | Multi-device / MSP management |
+| High | Real-hardware validation |
+| High | Improved security assessment interface |
+| High | Remediation approval and rollback GUI |
+| Medium | Locale-independent network diagnostics |
+| Medium | PDF and advanced reporting |
+| Medium | SQLite diagnostic history |
+| Future | Installer and code signing |
+| Future | Multi-device / MSP management |
 
-## License
+*Roadmap items are planned, not currently available features.*
 
-Proprietary — **all rights reserved**. The source is visible for evaluation only; see [`LICENSE`](LICENSE). For commercial licensing or custom builds, contact the maintainer through GitHub.
+## 🔐 Privacy & Security
 
-## Maintainer
+- No account required.
+- No built-in telemetry upload.
+- Reports stored locally.
+- Security scans are read-only.
+- Remediation is opt-in.
+- External connectivity probes are used only for reachability checks.
 
-**Asem Dief** — [github.com/Asemdief](https://github.com/Asemdief)
+Always review organisational policies before using the tool on managed endpoints.
+
+## 🤝 Feedback
+
+Found an issue or compatibility problem?
+
+Open a GitHub issue with:
+- Windows version and build.
+- Application privilege level.
+- Relevant finding ID.
+- Sanitized debug output.
+
+Never upload passwords, credentials, tokens, or sensitive endpoint information.
+
+## 📄 License
+
+**Proprietary — All Rights Reserved.**
+
+Public repository visibility does not grant permission for commercial use, redistribution, or modification. See [LICENSE](LICENSE).
+
+## 👨‍💻 Maintainer
+
+**Asem Dief**
+
+[GitHub Profile](https://github.com/Asemdief)
+
+---
+
+<div align="center">
+
+### ITOps Command
+
+**Less Guesswork. Better Endpoint Visibility.**
+
+</div>
